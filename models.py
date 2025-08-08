@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://postgres:xneqqzzxNbAohKWezfjLsVZnKpCfvwOH@tramway.proxy.rlwy.net:40679/railway')
+DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://postgres:wMdDBoTrriIEfXSPugzsixIfOwOBtRIi@yamabiko.proxy.rlwy.net:12951/railway')
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -37,7 +37,7 @@ class WebhookEvent(Base):
     processed = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)  # Tables will be created by Alembic migrations
 
 def get_db():
     db = SessionLocal()

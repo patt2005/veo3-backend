@@ -361,6 +361,53 @@ def get_credits(app_user_id):
         logger.error(f"Error getting credits: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
 
+@app.route('/add-credits', methods=['POST'])
+def add_credits():
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        
+        app_user_id = data.get('app_user_id')
+        credits_to_add = data.get('credits', 0)
+        
+        if not app_user_id:
+            return jsonify({'error': 'app_user_id is required'}), 400
+        
+        if credits_to_add <= 0:
+            return jsonify({'error': 'Credits must be greater than 0'}), 400
+        
+        try:
+            user_uuid = uuid.UUID(app_user_id)
+        except ValueError:
+            return jsonify({'error': 'Invalid UUID format for app_user_id'}), 400
+        
+        db = next(get_db())
+        try:
+            user = db.query(User).filter(User.id == user_uuid).first()
+            
+            if not user:
+                return jsonify({'error': 'User not found'}), 404
+            
+            user.credits += credits_to_add
+            db.commit()
+            
+            logger.info(f"Added {credits_to_add} credits for user: {app_user_id} - Total: {user.credits}")
+            
+            return jsonify({
+                'message': 'Credits added successfully',
+                'user_id': str(user.id),
+                'credits_added': credits_to_add,
+                'total_credits': user.credits
+            }), 200
+            
+        finally:
+            db.close()
+            
+    except Exception as e:
+        logger.error(f"Error adding credits: {str(e)}")
+        return jsonify({'error': 'Internal server error'}), 500
+
 @app.route('/use-credits', methods=['POST'])
 def use_credits():
     try:

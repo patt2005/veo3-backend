@@ -7,7 +7,7 @@ This backend now includes a webhook endpoint for RevenueCat at `/PostBack` that 
 1. **Environment Variables**
    Add these to your environment:
    ```
-   DATABASE_URL=postgresql://postgres:xneqqzzxNbAohKWezfjLsVZnKpCfvwOH@tramway.proxy.rlwy.net:40679/railway
+   DATABASE_URL=postgresql://postgres:wMdDBoTrriIEfXSPugzsixIfOwOBtRIi@yamabiko.proxy.rlwy.net:12951/railway
    REVENUECAT_WEBHOOK_SECRET=your_secret_here      # Optional but recommended
    ```
 
