@@ -27,13 +27,28 @@ def process_webhook_event(event_data: dict, db: Session):
         return {"status": "already_processed"}
     
     # Store webhook event
+    # Handle event_timestamp_ms - RevenueCat sends milliseconds as integer
+    event_timestamp_ms = event.get('event_timestamp_ms')
+    if event_timestamp_ms:
+        if isinstance(event_timestamp_ms, (int, float)):
+            # Convert milliseconds to datetime
+            event_timestamp = datetime.fromtimestamp(event_timestamp_ms / 1000)
+        else:
+            # Try to parse as ISO format string if it's a string
+            try:
+                event_timestamp = datetime.fromisoformat(str(event_timestamp_ms))
+            except ValueError:
+                event_timestamp = datetime.utcnow()
+    else:
+        event_timestamp = datetime.utcnow()
+    
     webhook_event = WebhookEvent(
         event_id=event_id,
         event_type=event_type,
         app_user_id=app_user_id,
         product_id=product_id,
         environment=event.get('environment', 'production'),
-        event_timestamp=datetime.fromisoformat(event.get('event_timestamp_ms', str(datetime.utcnow()))),
+        event_timestamp=event_timestamp,
         payload=event_data
     )
     db.add(webhook_event)
