@@ -1,0 +1,44 @@
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/veo3-api:$COMMIT_SHA', '.']
+
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/veo3-api:$COMMIT_SHA']
+
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'veo3-api'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/veo3-api:$COMMIT_SHA'
+      - '--region'
+      - 'northamerica-northeast1'
+      - '--platform'
+      - 'managed'
+      - '--port'
+      - '8080'
+      - '--allow-unauthenticated'
+      - '--memory'
+      - '512Mi'
+      - '--cpu'
+      - '1'
+      - '--max-instances'
+      - '100'
+      - '--set-secrets'
+      - 'SERVICE_ACCOUNT_JSON=veo3-service-account-json:latest'
+      - '--set-env-vars'
+      - 'PROJECT_ID=daring-runway-465515-i2'
+      - '--set-env-vars'
+      - 'LOCATION=us-central1'
+
+# Store image in Artifact Registry
+images:
+  - 'gcr.io/$PROJECT_ID/veo3-api:$COMMIT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

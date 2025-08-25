@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo $LOCATION)",
+      "Bash(alembic init:*)",
+      "Bash(pip install:*)",
+      "Bash(pip3 install:*)",
+      "Bash(python3:*)",
+      "Bash(ls:*)",
+      "Bash(alembic revision:*)",
+      "Bash(python -m alembic revision:*)",
+      "Bash(grep:*)",
+      "Bash(./test_credits.sh:*)",
+      "Bash(python:*)"
+    ],
+    "deny": []
+  }
+}
