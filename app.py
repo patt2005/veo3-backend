@@ -1,8 +1,5 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from google.oauth2 import service_account
-from google.auth.transport.requests import Request
-import google.auth.transport.requests
 import requests
 import json
 import os
@@ -17,32 +14,11 @@ CORS(app)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-SERVICE_ACCOUNT_JSON = os.getenv('SERVICE_ACCOUNT_JSON')
 PROJECT_ID = os.getenv('PROJECT_ID', 'daring-runway-465515-i2')
 LOCATION = os.getenv('LOCATION', 'us-central1')
 
-if SERVICE_ACCOUNT_JSON:
-    try:
-        service_account_info = json.loads(SERVICE_ACCOUNT_JSON)
-        credentials = service_account.Credentials.from_service_account_info(
-            service_account_info,
-            scopes=['https://www.googleapis.com/auth/cloud-platform']
-        )
-        print("✓ Service account credentials loaded successfully")
-    except json.JSONDecodeError as e:
-        print(f"✗ Invalid JSON in SERVICE_ACCOUNT_JSON: {e}")
-        raise
-    except Exception as e:
-        print(f"✗ Error loading service account credentials: {e}")
-        raise
-else:
-    print("✗ SERVICE_ACCOUNT_JSON environment variable is required")
-    raise ValueError("SERVICE_ACCOUNT_JSON environment variable is required")
-
 def get_access_token():
-    auth_req = google.auth.transport.requests.Request()
-    credentials.refresh(auth_req)
-    return credentials.token
+    return "Hello, world"
 
 @app.route('/')
 def hello_world():
